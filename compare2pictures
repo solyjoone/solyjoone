@@ -1,0 +1,36 @@
+import cv2
+
+#make a function for make aobject and keypoints
+def compare_using_orb(imageA, imageB):
+
+    orb = cv2.ORB_create()
+
+# get Key point from image1 and image2
+    keypointsA, descriptorsA = orb.detectAndCompute(imageA, None)
+    keypointsB, descriptorsB = orb.detectAndCompute(imageB, None)
+
+    #  use bfmatcehr to check simila
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(descriptorsA, descriptorsB)
+
+    #  sort diffrence per distance ,smaller distance more simila
+    matches = sorted(matches, key=lambda x: x.distance)
+
+    return len(matches)
+
+#make 2 varibale for describe path of pictures
+path1 = "C://baba/Freelancer/Compare2pic/2.jpg"
+path2 =  "C://baba/Freelancer/Compare2pic/1.jpg"
+# read pictureg
+imageA = cv2.imread(path1, cv2.IMREAD_GRAYSCALE)
+imageB = cv2.imread(path2, cv2.IMREAD_GRAYSCALE)
+#check and compare of pictures
+number_of_matches = compare_using_orb(imageA, imageB)
+
+if number_of_matches >=90:
+    print('same picture')
+    print(f"Number of matched features: {number_of_matches}")
+   # print('percent',percent_of_similar)
+else:
+    print(f"Number of matched features: {number_of_matches}")
+    print('diff picture')
